@@ -1,7 +1,6 @@
 package thkoeln.algo.praktikumms1.graph;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 
 public class Network {
     private ArrayList<Node> nodes;
@@ -21,51 +20,72 @@ public class Network {
     }
 
     public void addNode(String name){
-        throw new UnsupportedOperationException();
+        Node newNode = new Node(name);
+        addNode(newNode);
     }
 
     public void addNode(Node node){
-        throw new UnsupportedOperationException();
+        nodes.add(node);
     }
 
     public void removeNode(String name){
-        throw new UnsupportedOperationException();
+        Node node = findNode(name);
+        if(node == null) {
+            System.out.println("Node '" + name + "' does not exist!");
+            return;
+        }
+        removeNode(node);
     }
 
     public void removeNode(Node node){
-        throw new UnsupportedOperationException();
+        int edgeCount = node.edges.size();
+        for(int i = 0; i<edgeCount; i++){
+            Edge currentEdge = node.edges.get(0);
+            removeEdge(currentEdge);
+        }
+        nodes.remove(node);
     }
 
     public Node findNode(String name){
-        throw new UnsupportedOperationException();
+        for(Node node : nodes){
+            if(node.name == name)
+                return node;
+        }
+        return null;
     }
 
     public void addEdge(Node start, Node target, int length){
-        throw new UnsupportedOperationException();
+        Edge newEdge = new Edge(start,target,length);
+        addEdge(newEdge);
     }
 
     public void addEdge(String start, String target, int length){
-        throw new UnsupportedOperationException();
+        Node startNode = findNode(start);
+        Node targetNode = findNode(target);
+        addEdge(startNode, targetNode, length);
     }
 
     public void addEdge(Edge edge){
-        throw new UnsupportedOperationException();
+        edges.add(edge);
     }
 
     public void removeEdge(Edge edge){
-        throw new UnsupportedOperationException();
+        edges.remove(edge);
+        edge.start.edges.remove(edge);
+        edge.target.edges.remove(edge);
     }
 
     public ArrayList<Node> getAllNodes(){
-        throw new UnsupportedOperationException();
+        return nodes;
     }
 
     public ArrayList<Edge> getAllEdges(){
-        throw new UnsupportedOperationException();
+        return edges;
     }
 
     public void clear(){
-        throw new UnsupportedOperationException();
+        nodes.clear();
+        edges.clear();
     }
 
     public String toString(){

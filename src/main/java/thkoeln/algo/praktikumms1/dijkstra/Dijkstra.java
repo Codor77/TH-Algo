@@ -23,43 +23,106 @@ public class Dijkstra {
     }
 
     public void initializeFrom(Node node){
-        throw new UnsupportedOperationException();
+        startNode = node;
+        unsettled.add(startNode);
+        for(Node iNode : network.getAllNodes()){
+            Predecessor newPred;
+            if(iNode == startNode)
+                newPred = new Predecessor(null,0);
+            else
+                newPred = new Predecessor(null,Integer.MAX_VALUE);
+
+            predecessors.put(iNode,newPred);
+        }
     }
 
     public void initializeFrom(String node){
-        throw new UnsupportedOperationException();
+        initializeFrom(network.findNode(node));
     }
 
     private Node getLowestUnsettled(){
-        throw new UnsupportedOperationException();
+        Node lowestUnsettled = null;
+        for(Node node : unsettled){
+            if (lowestUnsettled == null) {
+                lowestUnsettled = node;
+            }
+            else if (predecessors.get(node).length < predecessors.get(lowestUnsettled).length){
+                lowestUnsettled = node;
+            }
+        }
+        return lowestUnsettled;
     }
 
     private void settleNode(Node node){
-        throw new UnsupportedOperationException();
+        unsettled.remove(node);
+        settled.add(node);
     }
 
     public void calculatePaths(){
-        throw new UnsupportedOperationException();
+        while (!unsettled.isEmpty()){
+            Node lowestUnsettled = getLowestUnsettled();
+            int edgeCount = lowestUnsettled.edges.size();
+            for(int i = 0; i<edgeCount; i++){
+                Edge currentEdge = lowestUnsettled.edges.get(i);
+                if(currentEdge.start == lowestUnsettled){
+                    int newLength = predecessors.get(lowestUnsettled).length + currentEdge.length;
+                    if(newLength < predecessors.get(currentEdge.target).length){
+                        predecessors.get(currentEdge.target).predecessor = lowestUnsettled;
+                        predecessors.get(currentEdge.target).length = newLength;
+                        unsettled.add(currentEdge.target);
+                    }
+                }
+                if(currentEdge.target == lowestUnsettled){
+                    int newLength = predecessors.get(lowestUnsettled).length + currentEdge.length;
+                    if(newLength < predecessors.get(currentEdge.start).length){
+                        predecessors.get(currentEdge.start).predecessor = lowestUnsettled;
+                        predecessors.get(currentEdge.start).length = newLength;
+                        unsettled.add(currentEdge.start);
+                    }
+                }
+            }
+            settleNode(lowestUnsettled);
+        }
     }
 
     public Route generateRoute(Node target){
-        throw new UnsupportedOperationException();
+        Route route = new Route();
+        route.addNode(target);
+        Node predecessor = predecessors.get(target).predecessor;
+        while(predecessor != startNode){
+            route.addNode(predecessor);
+            predecessor = predecessors.get(predecessor).predecessor;
+        }
+        route.addNode(predecessor);
+        route.setLength(predecessors.get(target).length);
+        return route;
     }
 
     public Route generateRoute(String target){
-        throw new UnsupportedOperationException();
+        return generateRoute(network.findNode(target));
     }
 
     public Route generateRoute(Node start, Node target){
-        throw new UnsupportedOperationException();
+        Dijkstra tempDijkstra = new Dijkstra(network);
+        tempDijkstra.initializeFrom(start);
+        tempDijkstra.calculatePaths();
+        return tempDijkstra.generateRoute(target);
     }
 
     public Route generateRoute(String start, String target){
-        throw new UnsupportedOperationException();
+        return generateRoute(network.findNode(start),network.findNode(target));
+
     }
 
     public void printPredecessors(){
         System.out.println(predecessors);
+    }
+
+    public void printUnsettled(){
+        System.out.println(unsettled);
+    }
+    public void printSettled(){
+        System.out.println(settled);
     }
 
     
