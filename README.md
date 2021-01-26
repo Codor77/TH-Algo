@@ -27,5 +27,3 @@ Route: A:E: length = 14
 Außerdem sind jetzt auch die Komponenten für MS2 enthalten, hier solltet ihr vor allem in der
 AwesomePriorityQueue.java arbeiten (lest euch den Kommentar dort durch für mehr Infos darüber
 was zu tun ist).
-
-test
